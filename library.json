@@ -1,0 +1,19 @@
+{
+    "name": "CAN_Interface",
+    "description": "An abstraction layer to the CAN interface",
+    "keywords": "Hyperloop, Manchester, hyperloop, manchester, CAN, CAN bus, interface, abstraction",
+    "version": "1.0.0",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/manchester-hyperloop/CAN_Interface"
+    },
+    "author":
+    {
+        "name": "Harry O'Brien",
+        "url": "https://github.com/Harry-OBrien",
+        "maintainer": true
+    },
+    "frameworks": "*",
+    "platforms": "*"
+}
