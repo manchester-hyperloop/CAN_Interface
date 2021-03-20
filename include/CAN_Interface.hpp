@@ -5,20 +5,20 @@
 #include <Log.hpp>
 
 #include "Packets.hpp"
-#include "CAN_Frame.hpp"
 
 #ifndef UNIT_TEST
-#include <mcp2515_can.h>
+#include <mcp2515.h>
 #else
-#include <CAN_Mock.hpp>
+#include <MCP2515_Mock.hpp>
 #endif
 
 class CAN_Interface
 {
 #ifndef UNIT_TEST
-    mcp2515_can CAN;
+    MCP2515 CAN;
 #else
-    CAN_Mock CAN;
+    // Mock
+    MCP2515 CAN;
 #endif
 
     /// echo request frame model to be subscribed to
@@ -29,32 +29,27 @@ class CAN_Interface
 public:
     /**
      * Constructor. Assigns the CS pin for the CAN module
+     * @param CS_pin pin number of the chip select pin used
      */
-    CAN_Interface();
+    CAN_Interface(uint8_t CS_pin = 10);
 
     /**
      * Initialise the connected CAN module
      * @return true on success, false otherwise
      */
-    bool init();
+    bool init(CAN_SPEED bit_rate = CAN_500KBPS, CAN_CLOCK clock_speed = MCP_16MHZ);
 
     /**
      * Send a frame across the CAN bus
      * @param frame - Frame to send 
      * @return true on success, false otherwise
      */
-    bool send(CAN_Frame frame);
+    bool send(can_frame *frame);
 
     /**
      * Read the latest message from the CAN bus. This should be called regularly
      */
     void read_latest_message();
-
-    /**
-     * Checks if a message is waiting for us to read it
-     * @return true if message is available, false otherwise
-     */
-    bool message_available();
 
     /**
      * Get the 'echo request' model for observers to subscribe to
@@ -71,9 +66,10 @@ public:
 private:
     /**
      * Parse a packet into its specialised packet (e.g. echo_request_packet) and assign it to a subject to notify relevant subscribers
+     * @param frame A pointer to the frame to parse
      * @return true if packet parsed successfully, false otherwise
      */
-    bool parse_and_update();
+    bool parse_and_update(can_frame *frame);
 };
 
 #endif /* lib_CAN_Interface_CAN_Interface_hpp */

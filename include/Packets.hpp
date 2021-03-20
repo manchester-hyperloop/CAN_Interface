@@ -9,7 +9,13 @@
 #ifndef lib_CAN_Interface_Packets_hpp
 #define lib_CAN_Interface_Packets_hpp
 
-#include "CAN_Frame.hpp"
+#ifndef UNIT_TEST
+#include <mcp2515.h>
+#else
+#include <MCP2515_Mock.hpp>
+#endif
+
+#include "CAN_Copy_Frame.hpp"
 
 /**
  * The priority of packets that we can parse. Also used as the ID of a packet. Research how CAN IDs work for more info.
@@ -23,7 +29,7 @@ enum Packet_Priority
 /**
  * Frame that requests all other devices on the CAN network to echo back a given value
  */
-struct Echo_Request_Packet : public CAN_Frame
+struct Echo_Request_Packet : public can_frame
 {
     /**
      * Basic constructor. Assigns ID to frame
@@ -47,7 +53,7 @@ struct Echo_Request_Packet : public CAN_Frame
 /**
  * Frame that responds to an echo request by sending back a given value
  */
-struct Echo_Response_Packet : public CAN_Frame
+struct Echo_Response_Packet : public can_frame
 {
     /**
      * Basic constructor. Assigns ID to frame
