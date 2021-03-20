@@ -25,6 +25,6 @@ struct CAN_Frame
     uint8_t data[CAN_MAX_DLEN] __attribute__((aligned(8)));
 };
 
-void specialise_abstract_frame(CAN_Frame *dst, CAN_Frame *src);
+void copy_frame(CAN_Frame *dst, CAN_Frame *src);
 
 #endif /* lib_CAN_Interface_CAN_Frame_hpp */

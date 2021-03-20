@@ -20,17 +20,17 @@ enum Packet_Priority
 struct Echo_Request_Packet : public CAN_Frame
 {
     Echo_Request_Packet();
-    Echo_Request_Packet(uint16_t random_value);
 
-    void parse_to_core_values(uint16_t *buf);
+    static Echo_Request_Packet serialise(uint16_t random_value);
+    void deserialise(uint16_t *buf);
 };
 
 struct Echo_Response_Packet : public CAN_Frame
 {
     Echo_Response_Packet();
-    Echo_Response_Packet(uint16_t response_value);
 
-    void parse_to_core_values(uint16_t *buf);
+    static Echo_Response_Packet serialise(uint16_t response_value);
+    void deserialise(uint16_t *buf);
 };
 
 #endif /* lib_CAN_Interface_Packets_hpp */
