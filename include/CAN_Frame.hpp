@@ -25,6 +25,11 @@ struct CAN_Frame
     uint8_t data[CAN_MAX_DLEN] __attribute__((aligned(8)));
 };
 
+/**
+ * Copy core information from one frame to another. Useful in copying data to a 'specialised' frame.
+ * @param dst - Destination frame
+ * @param src - Source frame
+ */
 void copy_frame(CAN_Frame *dst, CAN_Frame *src);
 
 #endif /* lib_CAN_Interface_CAN_Frame_hpp */
