@@ -27,10 +27,10 @@ void teardown(void)
 
 // TODO: Seperate compilation, parsing and notification into new file for every packet
 // Constructor will compile into correct message format
-void test_compile_request_to_correct_packet(void)
+void test_serialise_request_to_correct_packet(void)
 {
     uint16_t random_test_value = 13;
-    CAN_Frame test_frame = Echo_Request_Packet(random_test_value);
+    CAN_Frame test_frame = Echo_Request_Packet::serialise(random_test_value);
 
     // Check that the id is set correctly
     TEST_ASSERT_EQUAL(test_frame.can_id, Packet_Priority::PRIORITY_ECHO_REQUEST);
@@ -43,13 +43,13 @@ void test_compile_request_to_correct_packet(void)
 }
 
 // Parser will parse into correct message type
-void test_parse_request_to_correct_packet(void)
+void test_deserialise_request_to_correct_packet(void)
 {
     uint16_t random_test_value = 14;
-    Echo_Request_Packet packet(random_test_value);
+    Echo_Request_Packet packet = Echo_Request_Packet::serialise(random_test_value);
 
     uint16_t parsed_value;
-    packet.parse_to_core_values(&parsed_value);
+    packet.deserialise(&parsed_value);
     TEST_ASSERT_EQUAL(random_test_value, parsed_value);
 }
 
@@ -66,7 +66,7 @@ void get_latest_request_packet(Echo_Request_Packet pkt)
 void test_notification_sent_on_request_packet_receive(void)
 {
     uint16_t random_test_value = 14;
-    CAN_Mock::set_packet_rx(Echo_Request_Packet(random_test_value));
+    CAN_Mock::set_packet_rx(Echo_Request_Packet::serialise(random_test_value));
 
     setup();
 
@@ -79,7 +79,7 @@ void test_notification_sent_on_request_packet_receive(void)
     TEST_ASSERT(request_notification_called);
 
     uint16_t received_value;
-    latest_request_packet.parse_to_core_values(&received_value);
+    latest_request_packet.deserialise(&received_value);
     TEST_ASSERT(random_test_value == received_value);
 }
 
@@ -87,8 +87,8 @@ int main(int argc, char **argv)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_compile_request_to_correct_packet);
-    RUN_TEST(test_parse_request_to_correct_packet);
+    RUN_TEST(test_serialise_request_to_correct_packet);
+    RUN_TEST(test_deserialise_request_to_correct_packet);
     RUN_TEST(test_notification_sent_on_request_packet_receive);
 
     UNITY_END();

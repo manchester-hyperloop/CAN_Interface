@@ -47,8 +47,8 @@ std::string getLastLoggedMessage()
     return getLogFileMock().getLastMessage();
 }
 
-// data from an abstract CAN_Frame can be specialised
-void data_copied_to_specialisation(void)
+// data from an abstract CAN_Frame can be copied to another
+void test_copy_frame(void)
 {
     CAN_Frame f1, f2;
     f1.can_id = 13;
@@ -57,7 +57,7 @@ void data_copied_to_specialisation(void)
     uint8_t test_data[3] = {1, 2, 3};
     memcpy(f1.data, test_data, 3);
 
-    specialise_abstract_frame(&f1, &f2);
+    copy_frame(&f1, &f2);
 
     TEST_ASSERT_EQUAL(f1.can_id, f2.can_id);
     TEST_ASSERT_EQUAL(f1.can_dlc, f2.can_dlc);
@@ -73,16 +73,16 @@ void test_message_send_possible(void)
     setup();
 
     uint16_t test_data = 11;
-    Echo_Response_Packet pkt(test_data);
+    Echo_Response_Packet pkt = Echo_Response_Packet::serialise(test_data);
 
     bool result = interface->send(pkt);
     TEST_ASSERT(result);
 
     Echo_Response_Packet tx_packet;
-    specialise_abstract_frame(&tx_packet, &CAN_Mock::latest_tx_frame);
+    copy_frame(&tx_packet, &CAN_Mock::latest_tx_frame);
 
     uint16_t sent_value;
-    tx_packet.parse_to_core_values(&sent_value);
+    tx_packet.deserialise(&sent_value);
     TEST_ASSERT_EQUAL(test_data, sent_value);
 }
 
@@ -108,7 +108,7 @@ void test_log_warning_on_unsuccessful_message_send(void)
 
     uint16_t test_data = 11;
     CAN_Interface interface;
-    Echo_Response_Packet pkt(test_data);
+    Echo_Response_Packet pkt = Echo_Response_Packet::serialise(test_data);
 
     bool result = interface.send(pkt);
     TEST_ASSERT_FALSE(result);
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 
     log_inst.init();
 
-    RUN_TEST(data_copied_to_specialisation);
+    RUN_TEST(test_copy_frame);
 
     RUN_TEST(test_message_send_possible);
     RUN_TEST(test_log_warning_on_unsuccessful_message_send);
