@@ -2,7 +2,7 @@
 
 #ifdef CAN_PACKET_SET_LIGHT
 
-Set_Light_Packet::Echo_Request_Packet()
+Set_Light_Packet::Set_Light_Packet()
 {
     can_id = Packet_Priority::CAN_PRIORITY_SET_LIGHT;
 }

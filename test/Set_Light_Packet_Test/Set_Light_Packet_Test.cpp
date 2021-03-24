@@ -32,7 +32,7 @@ void teardown(void)
 void test_serialise_request_to_correct_packet(void)
 {
     uint16_t random_test_value = 13;
-    CAN_Frame test_frame = Set_Light_Packet::serialise(random_test_value);
+    can_frame test_frame = Set_Light_Packet::serialise(random_test_value);
 
     // Check that the id is set correctly
     TEST_ASSERT_EQUAL(test_frame.can_id, Packet_Priority::CAN_PRIORITY_SET_LIGHT);

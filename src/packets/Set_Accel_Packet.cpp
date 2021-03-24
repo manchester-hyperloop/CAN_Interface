@@ -2,7 +2,7 @@
 
 #ifdef CAN_PACKET_SET_ACCEL
 
-Set_Accel_Packet::Echo_Request_Packet()
+Set_Accel_Packet::Set_Accel_Packet()
 {
     can_id = Packet_Priority::CAN_PRIORITY_SET_ACCEL;
 }

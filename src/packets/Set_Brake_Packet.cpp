@@ -2,9 +2,9 @@
 
 #ifdef CAN_PACKET_SET_BRAKE
 
-Set_Brake_Packet::Echo_Request_Packet()
+Set_Brake_Packet::Set_Brake_Packet()
 {
-    can_id = Packet_Priority::PRIORITY_ECHO_REQUEST;
+    can_id = Packet_Priority::CAN_PRIORITY_SET_BRAKE;
 }
 
 Set_Brake_Packet Set_Brake_Packet::serialise(uint16_t random_value)

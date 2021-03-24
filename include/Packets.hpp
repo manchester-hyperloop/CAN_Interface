@@ -97,7 +97,7 @@ struct Set_Brake_Packet : public can_frame
     /**
      * Basic constructor. Assigns ID to frame
      */
-    Echo_Response_Packet();
+    Set_Brake_Packet();
 
     /**
      * Create a echo response frame with some arbitrary value.
@@ -123,7 +123,7 @@ struct Set_Accel_Packet : public can_frame
     /**
      * Basic constructor. Assigns ID to frame
      */
-    Echo_Response_Packet();
+    Set_Accel_Packet();
 
     /**
      * Create a echo response frame with some arbitrary value.

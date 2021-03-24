@@ -4,7 +4,7 @@
 
 Echo_Request_Packet::Echo_Request_Packet()
 {
-    can_id = Packet_Priority::PRIORITY_ECHO_REQUEST;
+    can_id = Packet_Priority::CAN_PRIORITY_ECHO_REQUEST;
 }
 
 Echo_Request_Packet Echo_Request_Packet::serialise(uint16_t random_value)
