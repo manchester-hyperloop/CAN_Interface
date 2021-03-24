@@ -95,6 +95,7 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
     // Specialise packet and inform subscribers
     switch (frame->can_id)
     {
+#ifdef CAN_PACKET_ECHO_REQUEST
     case Packet_Priority::PRIORITY_ECHO_REQUEST:
     {
         Echo_Request_Packet echo_request_packet;
@@ -102,7 +103,8 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
         latest_echo_request_frame = echo_request_packet;
         return true;
     }
-
+#endif
+#ifdef CAN_PACKET_ECHO_RESPONSE
     case Packet_Priority::PRIORITY_ECHO_RESPONSE:
     {
         Echo_Response_Packet echo_response_packet;
@@ -110,7 +112,7 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
         latest_echo_response_frame = echo_response_packet;
         return true;
     }
-
+#endif
     default:
         LOG_WARN("Packet with id ", frame->can_id, " and length ", frame->can_dlc, "not recognised!");
         return false;

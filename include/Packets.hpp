@@ -15,7 +15,12 @@
 #include <MCP2515_Mock.hpp>
 #endif
 
-#include "CAN_Copy_Frame.hpp"
+/**
+ * Copy core information from one frame to another. Useful in copying data to a 'specialised' frame.
+ * @param dst - Destination frame
+ * @param src - Source frame
+ */
+void copy_frame(can_frame *dst, can_frame *src);
 
 /**
  * The priority of a given packet.
@@ -24,10 +29,12 @@
  */
 enum Packet_Priority
 {
-    PRIORITY_ECHO_REQUEST = 0,
-    PRIORITY_ECHO_RESPONSE,
+    CAN_PRIORITY_ECHO_REQUEST = 0,
+    CAN_PRIORITY_ECHO_RESPONSE = 1,
 };
 
+
+#ifdef CAN_PACKET_ECHO_REQUEST
 /**
  * Frame that requests all other devices on the CAN network to echo back a given value
  */
@@ -51,7 +58,9 @@ struct Echo_Request_Packet : public can_frame
      */
     void deserialise(uint16_t *dst);
 };
+#endif
 
+#ifdef CAN_PACKET_ECHO_RESPONSE
 /**
  * Frame that responds to an echo request by sending back a given value
  */
@@ -76,5 +85,6 @@ struct Echo_Response_Packet : public can_frame
      */
     void deserialise(uint16_t *dst);
 };
+#endif
 
 #endif /* lib_CAN_Interface_Packets_hpp */
