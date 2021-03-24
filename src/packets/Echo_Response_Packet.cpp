@@ -1,8 +1,10 @@
 #include "Packets.hpp"
 
+#ifdef CAN_PACKET_ECHO_RESPONSE
+
 Echo_Response_Packet::Echo_Response_Packet()
 {
-    can_id = Packet_Priority::PRIORITY_ECHO_RESPONSE;
+    can_id = Packet_Priority::CAN_PRIORITY_ECHO_RESPONSE;
 }
 
 Echo_Response_Packet Echo_Response_Packet::serialise(uint16_t response_value)
@@ -19,3 +21,5 @@ void Echo_Response_Packet::deserialise(uint16_t *buf)
 {
     memcpy(buf, &data[0], sizeof(uint16_t));
 }
+
+#endif

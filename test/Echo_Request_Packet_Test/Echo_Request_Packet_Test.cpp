@@ -32,10 +32,10 @@ void teardown(void)
 void test_serialise_request_to_correct_packet(void)
 {
     uint16_t random_test_value = 13;
-    CAN_Frame test_frame = Echo_Request_Packet::serialise(random_test_value);
+    can_frame test_frame = Echo_Request_Packet::serialise(random_test_value);
 
     // Check that the id is set correctly
-    TEST_ASSERT_EQUAL(test_frame.can_id, Packet_Priority::PRIORITY_ECHO_REQUEST);
+    TEST_ASSERT_EQUAL(test_frame.can_id, Packet_Priority::CAN_PRIORITY_ECHO_REQUEST);
 
     // Check that the data and length of data has been set correctly
     uint16_t compiled_value = 0;
@@ -72,7 +72,7 @@ void test_notification_sent_on_request_packet_receive(void)
 
     setup();
 
-    Subject<Echo_Request_Packet> *subject = interface->get_request_packet_model();
+    Subject<Echo_Request_Packet> *subject = interface->get_echo_request_subject();
 
     FuncCallback<Echo_Request_Packet> cb = FuncCallback<Echo_Request_Packet>(&get_latest_request_packet);
     Observer<Echo_Request_Packet> observer(subject, &cb);

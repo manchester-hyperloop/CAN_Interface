@@ -31,6 +31,21 @@ class CAN_Interface
     Subject<Echo_Response_Packet> latest_echo_response_frame;
 #endif
 
+#ifdef CAN_PACKET_SET_BRAKE
+    /// echo response frame model to be subscribed to
+    Subject<Set_Brake_Packet> latest_set_brake_frame;
+#endif
+
+#ifdef CAN_PACKET_SET_ACCEL
+    /// echo response frame model to be subscribed to
+    Subject<Set_Accel_Packet> latest_set_accel_frame;
+#endif
+
+#ifdef CAN_PACKET_SET_LIGHT
+    /// echo response frame model to be subscribed to
+    Subject<Set_Light_Packet> latest_set_light_frame;
+#endif
+
 public:
     /**
      * Constructor. Assigns the CS pin for the CAN module
@@ -63,7 +78,7 @@ public:
      * Get the 'echo request' model for observers to subscribe to
      * @return the Echo_Request_Packet subject
      */
-    Subject<Echo_Request_Packet> *get_request_packet_model() {
+    Subject<Echo_Request_Packet> *get_echo_request_subject() {
         return &latest_echo_request_frame;
     }
 #endif
@@ -73,8 +88,38 @@ public:
      * Get the 'echo response' model for observers to subscribe to
      * @return the Echo_Response_Packet subject
      */
-    Subject<Echo_Response_Packet> *get_response_packet_model() {
+    Subject<Echo_Response_Packet> *get_echo_response_subject() {
         return &latest_echo_response_frame;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_BRAKE
+    /**
+     * Get the 'echo response' model for observers to subscribe to
+     * @return the Echo_Response_Packet subject
+     */
+    Subject<Set_Brake_Packet> *get_set_brake_subject() {
+        return &latest_set_brake_frame;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_ACCEL
+    /**
+     * Get the 'echo response' model for observers to subscribe to
+     * @return the Echo_Response_Packet subject
+     */
+    Subject<Set_Accel_Packet> *get_set_accel_subject() {
+        return &latest_set_accel_frame;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_LIGHT
+    /**
+     * Get the 'echo response' model for observers to subscribe to
+     * @return the Echo_Response_Packet subject
+     */
+    Subject<Set_Light_Packet> *get_set_light_subject() {
+        return &latest_set_light_frame;
     }
 #endif
 

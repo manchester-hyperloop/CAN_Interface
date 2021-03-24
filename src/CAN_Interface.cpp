@@ -57,7 +57,7 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
     switch (frame->can_id)
     {
 #ifdef CAN_PACKET_ECHO_REQUEST
-    case Packet_Priority::PRIORITY_ECHO_REQUEST:
+    case Packet_Priority::CAN_PRIORITY_ECHO_REQUEST:
     {
         Echo_Request_Packet echo_request_packet;
         copy_frame(&echo_request_packet, frame);
@@ -67,11 +67,41 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
 #endif
 
 #ifdef CAN_PACKET_ECHO_RESPONSE
-    case Packet_Priority::PRIORITY_ECHO_RESPONSE:
+    case Packet_Priority::CAN_PRIORITY_ECHO_RESPONSE:
     {
         Echo_Response_Packet echo_response_packet;
         copy_frame(&echo_response_packet, frame);
         latest_echo_response_frame = echo_response_packet;
+        return true;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_BRAKE
+    case Packet_Priority::CAN_PRIORITY_SET_BRAKE:
+    {
+        Set_Brake_Packet set_brake_packet;
+        copy_frame(&set_brake_packet, frame);
+        latest_set_brake_frame = set_brake_packet;
+        return true;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_ACCEL
+    case Packet_Priority::CAN_PRIORITY_SET_ACCEL:
+    {
+        Set_Accel_Packet set_accel_packet;
+        copy_frame(&set_accel_packet, frame);
+        latest_set_accel_frame = set_accel_packet;
+        return true;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_LIGHT
+    case Packet_Priority::CAN_PRIORITY_SET_LIGHT:
+    {
+        Set_Light_Packet set_light_packet;
+        copy_frame(&set_light_packet, frame);
+        latest_set_light_frame = set_light_packet;
         return true;
     }
 #endif

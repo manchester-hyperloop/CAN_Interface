@@ -4,7 +4,7 @@
 #include <Notifications.hpp>
 #include <CAN_Mock.hpp>
 
-#define CAN_PACKET_ECHO_RESPONSE
+#define CAN_PACKET_SET_ACCEL
 #include <CAN_Interface.hpp>
 
 CAN_Interface *interface = nullptr;
@@ -29,13 +29,13 @@ void teardown(void)
 
 // TODO: Seperate compilation, parsing and notification into new file for every packet
 // Constructor will compile into correct message format
-void test_serialise_response_to_correct_packet(void)
+void test_serialise_request_to_correct_packet(void)
 {
     uint16_t random_test_value = 13;
-    can_frame test_frame = Echo_Response_Packet::serialise(random_test_value);
+    can_frame test_frame = Set_Accel_Packet::serialise(random_test_value);
 
     // Check that the id is set correctly
-    TEST_ASSERT_EQUAL(test_frame.can_id, Packet_Priority::CAN_PRIORITY_ECHO_RESPONSE);
+    TEST_ASSERT_EQUAL(test_frame.can_id, Packet_Priority::CAN_PRIORITY_SET_ACCEL);
 
     // Check that the data and length of data has been set correctly
     uint16_t compiled_value = 0;
@@ -45,43 +45,43 @@ void test_serialise_response_to_correct_packet(void)
 }
 
 // Parser will parse into correct message type
-void test_deserialise_response_to_correct_packet(void)
+void test_deserialise_request_to_correct_packet(void)
 {
     uint16_t random_test_value = 14;
-    Echo_Response_Packet packet = Echo_Response_Packet::serialise(random_test_value);
+    Set_Accel_Packet packet = Set_Accel_Packet::serialise(random_test_value);
 
     uint16_t parsed_value;
     packet.deserialise(&parsed_value);
     TEST_ASSERT_EQUAL(random_test_value, parsed_value);
 }
 
-bool response_notification_called = false;
-Echo_Response_Packet latest_response_packet;
-void get_latest_response_packet(Echo_Response_Packet pkt)
+bool request_notification_called = false;
+Set_Accel_Packet latest_request_packet;
+void get_latest_request_packet(Set_Accel_Packet pkt)
 {
-    response_notification_called = true;
-    latest_response_packet = pkt;
+    request_notification_called = true;
+    latest_request_packet = pkt;
 }
 
 // TODO: Make test more clear
 // CAN interface will notify us of a new packet of a selected type
-void test_notification_sent_on_response_packet_receive(void)
+void test_notification_sent_on_request_packet_receive(void)
 {
     uint16_t random_test_value = 14;
-    CAN_Mock::set_packet_rx(Echo_Response_Packet::serialise(random_test_value));
+    CAN_Mock::set_packet_rx(Set_Accel_Packet::serialise(random_test_value));
 
     setup();
 
-    Subject<Echo_Response_Packet> *subject = interface->get_echo_response_subject();
+    Subject<Set_Accel_Packet> *subject = interface->get_set_accel_subject();
 
-    FuncCallback<Echo_Response_Packet> cb = FuncCallback<Echo_Response_Packet>(&get_latest_response_packet);
-    Observer<Echo_Response_Packet> observer(subject, &cb);
+    FuncCallback<Set_Accel_Packet> cb = FuncCallback<Set_Accel_Packet>(&get_latest_request_packet);
+    Observer<Set_Accel_Packet> observer(subject, &cb);
 
     interface->read_latest_message();
-    TEST_ASSERT(response_notification_called);
+    TEST_ASSERT(request_notification_called);
 
     uint16_t received_value;
-    latest_response_packet.deserialise(&received_value);
+    latest_request_packet.deserialise(&received_value);
     TEST_ASSERT(random_test_value == received_value);
 }
 
@@ -89,9 +89,9 @@ int main(int argc, char **argv)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_serialise_response_to_correct_packet);
-    RUN_TEST(test_deserialise_response_to_correct_packet);
-    RUN_TEST(test_notification_sent_on_response_packet_receive);
+    RUN_TEST(test_serialise_request_to_correct_packet);
+    RUN_TEST(test_deserialise_request_to_correct_packet);
+    RUN_TEST(test_notification_sent_on_request_packet_receive);
 
     UNITY_END();
     return 0;
