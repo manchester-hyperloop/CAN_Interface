@@ -18,7 +18,9 @@
 #include "CAN_Copy_Frame.hpp"
 
 /**
- * The priority of packets that we can parse. Also used as the ID of a packet. Research how CAN IDs work for more info.
+ * The priority of a given packet.
+ * The closer the value is to zero, the higher the priority of the related 
+ * packet; it will be handled by a node before a lower priority packet is sent.
  */
 enum Packet_Priority
 {

@@ -1,8 +1,5 @@
 #include "Packets.hpp"
 
-/**
- * Basic constructor. Assigns ID to frame
- */
 Echo_Response_Packet::Echo_Response_Packet()
 {
     can_id = Packet_Priority::PRIORITY_ECHO_RESPONSE;
