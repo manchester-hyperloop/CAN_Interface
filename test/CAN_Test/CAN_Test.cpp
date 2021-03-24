@@ -7,11 +7,14 @@
 //
 
 #include <unity.h>
-#include <CAN_Interface.hpp>
 #include <Notifications.hpp>
 #include <CAN_Mock.hpp>
 #include <Log.hpp>
 #include <string.h>
+
+#define CAN_PACKET_ECHO_REQUEST
+#define CAN_PACKET_ECHO_RESPONSE
+#include <CAN_Interface.hpp>
 
 CAN_Interface *interface = nullptr;
 

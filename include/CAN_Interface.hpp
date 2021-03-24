@@ -21,10 +21,15 @@ class CAN_Interface
     MCP2515 CAN;
 #endif
 
+#ifdef CAN_PACKET_ECHO_REQUEST
     /// echo request frame model to be subscribed to
     Subject<Echo_Request_Packet> latest_echo_request_frame;
+#endif
+
+#ifdef CAN_PACKET_ECHO_RESPONSE
     /// echo response frame model to be subscribed to
     Subject<Echo_Response_Packet> latest_echo_response_frame;
+#endif
 
 public:
     /**
@@ -35,6 +40,8 @@ public:
 
     /**
      * Initialise the connected CAN module
+     * @param bit_rate Bit rate of the CAN bus we're connecting to
+     * @param clock_speed clock speed of CAN controller
      * @return true on success, false otherwise
      */
     bool init(CAN_SPEED bit_rate = CAN_500KBPS, CAN_CLOCK clock_speed = MCP_16MHZ);
@@ -51,22 +58,29 @@ public:
      */
     void read_latest_message();
 
+#ifdef CAN_PACKET_ECHO_REQUEST
     /**
      * Get the 'echo request' model for observers to subscribe to
      * @return the Echo_Request_Packet subject
      */
-    Subject<Echo_Request_Packet> *get_request_packet_model();
+    Subject<Echo_Request_Packet> *get_request_packet_model() {
+        return &latest_echo_request_frame;
+    }
+#endif
 
+#ifdef CAN_PACKET_ECHO_RESPONSE
     /**
      * Get the 'echo response' model for observers to subscribe to
      * @return the Echo_Response_Packet subject
      */
-    Subject<Echo_Response_Packet> *get_response_packet_model();
+    Subject<Echo_Response_Packet> *get_response_packet_model() {
+        return &latest_echo_response_frame;
+    }
+#endif
 
 private:
     /**
      * Parse a packet into its specialised packet (e.g. echo_request_packet) and assign it to a subject to notify relevant subscribers
-     * @param frame A pointer to the frame to parse
      * @return true if packet parsed successfully, false otherwise
      */
     bool parse_and_update(can_frame *frame);

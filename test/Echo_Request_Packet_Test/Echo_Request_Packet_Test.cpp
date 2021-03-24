@@ -1,9 +1,11 @@
 #include <cstddef>
 #include <unity.h>
-#include <CAN_Interface.hpp>
 #include <Instance.hpp>
 #include <Notifications.hpp>
 #include <CAN_Mock.hpp>
+
+#define CAN_PACKET_ECHO_REQUEST
+#include <CAN_Interface.hpp>
 
 CAN_Interface *interface = nullptr;
 

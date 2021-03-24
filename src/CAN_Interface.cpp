@@ -1,19 +1,10 @@
 #include "CAN_Interface.hpp"
 
-/**
- * Constructor. Assigns the CS pin for the CAN module
- */
 CAN_Interface::CAN_Interface(uint8_t CS_pin)
     : CAN(CS_pin)
 {
 }
 
-/**
- * Initialise the connected CAN module
- * @param bit_rate Bit rate of the CAN bus we're connecting to
- * @param clock_speed clock speed of CAN controller
- * @return true on success, false otherwise
- */
 bool CAN_Interface::init(CAN_SPEED bit_rate, CAN_CLOCK clock_speed)
 {
     // Reset the CAN controller
@@ -40,11 +31,6 @@ bool CAN_Interface::init(CAN_SPEED bit_rate, CAN_CLOCK clock_speed)
     return true;
 }
 
-/**
- * Send a frame across the CAN bus
- * @param frame - Frame to send 
- * @return true on success, false otherwise
- */
 bool CAN_Interface::send(can_frame *frame)
 {
     if (CAN.sendMessage(frame) != MCP2515::ERROR_OK)
@@ -56,9 +42,6 @@ bool CAN_Interface::send(can_frame *frame)
     return true;
 }
 
-/**
- * Read the latest message from the CAN bus. This should be called regularly
- */
 void CAN_Interface::read_latest_message()
 {
     can_frame latest_frame;
@@ -68,28 +51,6 @@ void CAN_Interface::read_latest_message()
     }
 }
 
-/**
- * Get the 'echo request' model for observers to subscribe to
- * @return the Echo_Request_Packet subject
- */
-Subject<Echo_Request_Packet> *CAN_Interface::get_request_packet_model()
-{
-    return &latest_echo_request_frame;
-}
-
-/**
- * Get the 'echo response' model for observers to subscribe to
- * @return the Echo_Response_Packet subject
- */
-Subject<Echo_Response_Packet> *CAN_Interface::get_response_packet_model()
-{
-    return &latest_echo_response_frame;
-}
-
-/**
- * Parse a packet into its specialised packet (e.g. echo_request_packet) and assign it to a subject to notify relevant subscribers
- * @return true if packet parsed successfully, false otherwise
- */
 bool CAN_Interface::parse_and_update(can_frame *frame)
 {
     // Specialise packet and inform subscribers
@@ -104,6 +65,7 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
         return true;
     }
 #endif
+
 #ifdef CAN_PACKET_ECHO_RESPONSE
     case Packet_Priority::PRIORITY_ECHO_RESPONSE:
     {
@@ -113,6 +75,7 @@ bool CAN_Interface::parse_and_update(can_frame *frame)
         return true;
     }
 #endif
+
     default:
         LOG_WARN("Packet with id ", frame->can_id, " and length ", frame->can_dlc, "not recognised!");
         return false;
