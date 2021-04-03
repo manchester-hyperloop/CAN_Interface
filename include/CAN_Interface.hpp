@@ -22,10 +22,10 @@
 class CAN_Interface
 {
 #ifndef UNIT_TEST
-    MCP2515 CAN;
+	MCP2515 CAN;
 #else
-    // Mock
-    MCP2515 CAN;
+	// Mock
+	MCP2515 CAN;
 #endif
 
 #ifdef CAN_PACKET_ECHO_REQUEST
@@ -54,31 +54,31 @@ class CAN_Interface
 #endif
 
 public:
-    /**
+	/**
      * Constructor. Assigns the CS pin for the CAN module
      * @param CS_pin pin number of the chip select pin used
      */
-    CAN_Interface(uint8_t CS_pin = 10);
+	CAN_Interface(uint8_t CS_pin = 10);
 
-    /**
+	/**
      * Initialise the connected CAN module
      * @param bit_rate Bit rate of the CAN bus we're connecting to
      * @param clock_speed clock speed of CAN controller
      * @return true on success, false otherwise
      */
-    bool init(CAN_SPEED bit_rate = CAN_500KBPS, CAN_CLOCK clock_speed = MCP_16MHZ);
+	bool init(CAN_SPEED bit_rate = CAN_500KBPS, CAN_CLOCK clock_speed = MCP_16MHZ);
 
-    /**
+	/**
      * Send a frame across the CAN bus
      * @param frame - Frame to send 
      * @return true on success, false otherwise
      */
-    bool send(can_frame *frame);
+	bool send(can_frame *frame);
 
-    /**
+	/**
      * Read the latest message from the CAN bus. This should be called regularly
      */
-    void read_latest_message();
+	void read_latest_message();
 
 #ifdef CAN_PACKET_ECHO_REQUEST
     /**
@@ -130,12 +130,13 @@ public:
     }
 #endif
 
+
 private:
-    /**
+	/**
      * Parse a packet into its specialised packet (e.g. echo_request_packet) and assign it to a subject to notify relevant subscribers
      * @return true if packet parsed successfully, false otherwise
      */
-    bool parse_and_update(can_frame *frame);
+	bool parse_and_update(can_frame *frame);
 };
 
 #endif /* lib_CAN_Interface_CAN_Interface_hpp */
