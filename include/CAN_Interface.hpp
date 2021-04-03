@@ -9,6 +9,13 @@
 #ifndef UNIT_TEST
 #include <mcp2515.h>
 #else
+
+#ifdef CAN_PACKET_TEST
+#define DEFINED_CAN_TEST_PACKET 1
+#else
+#define DEFINED_CAN_TEST_PACKET 0
+#endif
+
 #include <MCP2515_Mock.hpp>
 #endif
 

@@ -14,6 +14,7 @@
 
 #define CAN_PACKET_ECHO_REQUEST
 #define CAN_PACKET_ECHO_RESPONSE
+#define CAN_PACKET_TEST
 #include <CAN_Interface.hpp>
 
 CAN_Interface *interface = nullptr;
@@ -48,6 +49,11 @@ File &getLogFileMock()
 std::string getLastLoggedMessage()
 {
     return getLogFileMock().getLastMessage();
+}
+
+void test_defines_packet(void)
+{
+    TEST_ASSERT_EQUAL(DEFINED_CAN_TEST_PACKET, 1);
 }
 
 // data from an abstract CAN_Frame can be copied to another
@@ -128,6 +134,8 @@ int main(int argc, char **argv)
     UNITY_BEGIN();
 
     log_inst.init();
+
+    RUN_TEST(test_defines_packet);
 
     RUN_TEST(test_copy_frame);
 
