@@ -15,19 +15,31 @@
 #include <MCP2515_Mock.hpp>
 #endif
 
-#include "CAN_Copy_Frame.hpp"
+/**
+ * Copy core information from one frame to another. Useful in copying data to a 'specialised' frame.
+ * @param dst - Destination frame
+ * @param src - Source frame
+ */
+void copy_frame(can_frame *dst, can_frame *src);
 
 /**
- * The priority of packets that we can parse. Also used as the ID of a packet. Research how CAN IDs work for more info.
+ * The priority of a given packet.
+ * The closer the value is to zero, the higher the priority of the related 
+ * packet; it will be handled by a node before a lower priority packet is sent.
  */
 enum Packet_Priority
 {
-    PRIORITY_ECHO_REQUEST = 0,
-    PRIORITY_ECHO_RESPONSE,
+    CAN_PRIORITY_ECHO_REQUEST = 0,
+    CAN_PRIORITY_ECHO_RESPONSE = 1,
+    CAN_PRIORITY_SET_BRAKE = 2,
+    CAN_PRIORITY_SET_ACCEL = 3,
+    CAN_PRIORITY_SET_LIGHT = 4,
 };
 
+
+#ifdef CAN_PACKET_ECHO_REQUEST
 /**
- * Frame that requests all other devices on the CAN network to echo back a given value
+ * Requests all connected CAN nodes to respond with the given value.
  */
 struct Echo_Request_Packet : public can_frame
 {
@@ -49,9 +61,11 @@ struct Echo_Request_Packet : public can_frame
      */
     void deserialise(uint16_t *dst);
 };
+#endif
 
+#ifdef CAN_PACKET_ECHO_RESPONSE
 /**
- * Frame that responds to an echo request by sending back a given value
+ * Echoes back the requested value.
  */
 struct Echo_Response_Packet : public can_frame
 {
@@ -66,7 +80,7 @@ struct Echo_Response_Packet : public can_frame
      * The value that we load into this frame should be the one sent to us by the echo request frame
      * @param random_value some arbitrary value
      */
-    static Echo_Response_Packet serialise(uint16_t response_value);
+    static Echo_Response_Packet serialise(uint16_t random_value);
 
     /**
      * Deserialise the frame into a uint16_t passed
@@ -74,5 +88,84 @@ struct Echo_Response_Packet : public can_frame
      */
     void deserialise(uint16_t *dst);
 };
+#endif
+
+#ifdef CAN_PACKET_SET_BRAKE
+
+struct Set_Brake_Packet : public can_frame
+{
+    /**
+     * Basic constructor. Assigns ID to frame
+     */
+    Set_Brake_Packet();
+
+    /**
+     * Create a echo response frame with some arbitrary value.
+     * We chose to use a uint16_t, but this value could really be anything!
+     * The value that we load into this frame should be the one sent to us by the echo request frame
+     * @param random_value some arbitrary value
+     */
+    static Set_Brake_Packet serialise(uint16_t random_value);
+
+    /**
+     * Deserialise the frame into a uint16_t passed
+     * @param dst The destination to copy the data from the frame into
+     */
+    void deserialise(uint16_t *dst);
+}
+
+#endif
+
+#ifdef CAN_PACKET_SET_ACCEL
+
+struct Set_Accel_Packet : public can_frame
+{
+    /**
+     * Basic constructor. Assigns ID to frame
+     */
+    Set_Accel_Packet();
+
+    /**
+     * Create a echo response frame with some arbitrary value.
+     * We chose to use a uint16_t, but this value could really be anything!
+     * The value that we load into this frame should be the one sent to us by the echo request frame
+     * @param random_value some arbitrary value
+     */
+    static Set_Accel_Packet serialise(uint16_t random_value);
+
+    /**
+     * Deserialise the frame into a uint16_t passed
+     * @param dst The destination to copy the data from the frame into
+     */
+    void deserialise(uint16_t *dst);
+}
+
+#endif
+
+#ifdef CAN_PACKET_SET_LIGHT
+
+struct Set_Light_Packet : public can_frame
+{
+ /**
+     * Basic constructor. Assigns ID to frame
+     */
+    Set_Light_Packet();
+
+    /**
+     * Create a echo response frame with some arbitrary value.
+     * We chose to use a uint16_t, but this value could really be anything!
+     * The value that we load into this frame should be the one sent to us by the echo request frame
+     * @param random_value some arbitrary value
+     */
+    static Set_Light_Packet serialise(uint16_t random_value);
+
+    /**
+     * Deserialise the frame into a uint16_t passed
+     * @param dst The destination to copy the data from the frame into
+     */
+    void deserialise(uint16_t *dst);
+}
+
+#endif
 
 #endif /* lib_CAN_Interface_Packets_hpp */

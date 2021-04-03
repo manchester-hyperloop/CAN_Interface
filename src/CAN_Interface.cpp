@@ -1,19 +1,10 @@
 #include "CAN_Interface.hpp"
 
-/**
- * Constructor. Assigns the CS pin for the CAN module
- */
 CAN_Interface::CAN_Interface(uint8_t CS_pin)
 	: CAN(CS_pin)
 {
 }
 
-/**
- * Initialise the connected CAN module
- * @param bit_rate Bit rate of the CAN bus we're connecting to
- * @param clock_speed clock speed of CAN controller
- * @return true on success, false otherwise
- */
 bool CAN_Interface::init(CAN_SPEED bit_rate, CAN_CLOCK clock_speed)
 {
 	// Reset the CAN controller
@@ -40,11 +31,6 @@ bool CAN_Interface::init(CAN_SPEED bit_rate, CAN_CLOCK clock_speed)
 	return true;
 }
 
-/**
- * Send a frame across the CAN bus
- * @param frame - Frame to send 
- * @return true on success, false otherwise
- */
 bool CAN_Interface::send(can_frame *frame)
 {
 	if (CAN.sendMessage(frame) != MCP2515::ERROR_OK)
@@ -56,9 +42,6 @@ bool CAN_Interface::send(can_frame *frame)
 	return true;
 }
 
-/**
- * Read the latest message from the CAN bus. This should be called regularly
- */
 void CAN_Interface::read_latest_message()
 {
 	can_frame latest_frame;
@@ -68,48 +51,60 @@ void CAN_Interface::read_latest_message()
 	}
 }
 
-/**
- * Get the 'echo request' model for observers to subscribe to
- * @return the Echo_Request_Packet subject
- */
-Subject<Echo_Request_Packet> *CAN_Interface::get_request_packet_model()
-{
-	return &latest_echo_request_frame;
-}
-
-/**
- * Get the 'echo response' model for observers to subscribe to
- * @return the Echo_Response_Packet subject
- */
-Subject<Echo_Response_Packet> *CAN_Interface::get_response_packet_model()
-{
-	return &latest_echo_response_frame;
-}
-
-/**
- * Parse a packet into its specialised packet (e.g. echo_request_packet) and assign it to a subject to notify relevant subscribers
- * @return true if packet parsed successfully, false otherwise
- */
 bool CAN_Interface::parse_and_update(can_frame *frame)
 {
-	// Specialise packet and inform subscribers
-	switch (frame->can_id)
-	{
-	case Packet_Priority::PRIORITY_ECHO_REQUEST:
-	{
-		Echo_Request_Packet echo_request_packet;
-		copy_frame(&echo_request_packet, frame);
-		latest_echo_request_frame = echo_request_packet;
-		return true;
-	}
+    // Specialise packet and inform subscribers
+    switch (frame->can_id)
+    {
+#ifdef CAN_PACKET_ECHO_REQUEST
+    case Packet_Priority::CAN_PRIORITY_ECHO_REQUEST:
+    {
+        Echo_Request_Packet echo_request_packet;
+        copy_frame(&echo_request_packet, frame);
+        latest_echo_request_frame = echo_request_packet;
+        return true;
+    }
+#endif
 
-	case Packet_Priority::PRIORITY_ECHO_RESPONSE:
-	{
-		Echo_Response_Packet echo_response_packet;
-		copy_frame(&echo_response_packet, frame);
-		latest_echo_response_frame = echo_response_packet;
-		return true;
-	}
+#ifdef CAN_PACKET_ECHO_RESPONSE
+    case Packet_Priority::CAN_PRIORITY_ECHO_RESPONSE:
+    {
+        Echo_Response_Packet echo_response_packet;
+        copy_frame(&echo_response_packet, frame);
+        latest_echo_response_frame = echo_response_packet;
+        return true;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_BRAKE
+    case Packet_Priority::CAN_PRIORITY_SET_BRAKE:
+    {
+        Set_Brake_Packet set_brake_packet;
+        copy_frame(&set_brake_packet, frame);
+        latest_set_brake_frame = set_brake_packet;
+        return true;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_ACCEL
+    case Packet_Priority::CAN_PRIORITY_SET_ACCEL:
+    {
+        Set_Accel_Packet set_accel_packet;
+        copy_frame(&set_accel_packet, frame);
+        latest_set_accel_frame = set_accel_packet;
+        return true;
+    }
+#endif
+
+#ifdef CAN_PACKET_SET_LIGHT
+    case Packet_Priority::CAN_PRIORITY_SET_LIGHT:
+    {
+        Set_Light_Packet set_light_packet;
+        copy_frame(&set_light_packet, frame);
+        latest_set_light_frame = set_light_packet;
+        return true;
+    }
+#endif
 
 	default:
 		LOG_WARN("Packet with id ", frame->can_id, " and length ", frame->can_dlc, "not recognised!");
